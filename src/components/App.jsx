@@ -22,17 +22,13 @@ export class App extends Component {
     this.setState(prevState => ({
       contacts: [contact, ...prevState.contacts],
     }));
-    const adaptedData = JSON.stringify(contacts);
-    localStorage.setItem('key', adaptedData);
   };
-
-  componentDidMount() {
-    const gettedData = localStorage.getItem('key');
-    const parsedData = JSON.parse(gettedData);
-    const dataArray = Array.isArray(parsedData) ? parsedData : [];
-    this.setState({ contacts: dataArray });
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      const adaptedData = JSON.stringify(this.state.contacts);
+      localStorage.setItem('key', adaptedData);
+    }
   }
-
   filterContacts = () => {
     const { contacts, filter } = this.state;
     const normalName = filter.toLowerCase();
@@ -50,7 +46,6 @@ export class App extends Component {
     this.setState({
       contacts: this.state.contacts.filter(contact => contact.id !== nameId),
     });
-    localStorage.removeItem('key');
   };
   render() {
     const filteredName = this.filterContacts();
