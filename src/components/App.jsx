@@ -29,9 +29,8 @@ export class App extends Component {
   componentDidMount() {
     const gettedData = localStorage.getItem('key');
     const parsedData = JSON.parse(gettedData);
-    console.log(parsedData);
-    this.setState();
-    console.log(this.state.contacts);
+    const dataArray = Array.isArray(parsedData) ? parsedData : [];
+    this.setState({ contacts: dataArray });
   }
 
   filterContacts = () => {
