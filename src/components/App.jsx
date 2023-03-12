@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import ConstactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList ';
-import { contactsData } from 'extendedData/contactsData';
 import { nanoid } from 'nanoid';
 
 export class App extends Component {
   state = {
-    contacts: contactsData,
+    contacts: [],
     filter: '',
   };
 
@@ -23,7 +22,17 @@ export class App extends Component {
     this.setState(prevState => ({
       contacts: [contact, ...prevState.contacts],
     }));
+    const adaptedData = JSON.stringify(contacts);
+    localStorage.setItem('key', adaptedData);
   };
+
+  componentDidMount() {
+    const gettedData = localStorage.getItem('key');
+    const parsedData = JSON.parse(gettedData);
+    this.setState({
+      contacts: [...parsedData],
+    });
+  }
 
   filterContacts = () => {
     const { contacts, filter } = this.state;
@@ -42,6 +51,7 @@ export class App extends Component {
     this.setState({
       contacts: this.state.contacts.filter(contact => contact.id !== nameId),
     });
+    localStorage.removeItem('key');
   };
   render() {
     const filteredName = this.filterContacts();
