@@ -10,6 +10,21 @@ export class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const saveContact = localStorage.getItem('contacts');
+    if (saveContact !== null) {
+      const parseContact = JSON.parse(saveContact);
+      this.setState({ contacts: parseContact });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      const adaptedData = JSON.stringify(this.state.contacts);
+      localStorage.setItem('key', adaptedData);
+    }
+  }
+
   addContactsList = newContact => {
     const { contacts } = this.state;
     const trueFilter = contacts.some(
@@ -23,12 +38,7 @@ export class App extends Component {
       contacts: [contact, ...prevState.contacts],
     }));
   };
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.contacts !== this.state.contacts) {
-      const adaptedData = JSON.stringify(this.state.contacts);
-      localStorage.setItem('key', adaptedData);
-    }
-  }
+
   filterContacts = () => {
     const { contacts, filter } = this.state;
     const normalName = filter.toLowerCase();
@@ -36,6 +46,7 @@ export class App extends Component {
       name.toLowerCase().includes(normalName)
     );
   };
+
   onFilterChange = ev => {
     this.setState({
       filter: ev.target.value,
@@ -47,6 +58,7 @@ export class App extends Component {
       contacts: this.state.contacts.filter(contact => contact.id !== nameId),
     });
   };
+
   render() {
     const filteredName = this.filterContacts();
     return (
